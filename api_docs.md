@@ -176,3 +176,22 @@ Menghapus expense sekaligus akan otomatis menghapus gambar struk yang ada di Clo
       "user_id": 1
   }
   ```
+
+---
+
+## 5. Analytics
+
+### Get Expense Analytics
+Mendapatkan data analitik pengeluaran berdasarkan bulan dan tahun, yang dikelompokkan berdasarkan kategori. Berguna untuk menampilkan chart di frontend.
+
+Parameter `month` dan `year` dikirim melalui **Query Parameter** (`?month=3&year=2026`), sedangkan `user_id` dikirim melalui **JSON Body**.
+
+- **URL**: `/analytics/expenses`
+- **Method**: `GET`
+- **Query Params**: `?month=[int]&year=[int]` (Opsional - default melihat semua waktu)
+- **Body (JSON)**:
+  ```json
+  {
+      "user_id": 1
+  }
+  ```

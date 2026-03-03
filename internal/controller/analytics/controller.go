@@ -23,20 +23,23 @@ func NewController(usecase analyticsUsecase.Usecase) *Controller {
 func (c *Controller) GetExpenseAnalytics(ctx *fiber.Ctx) error {
 	var req model.ExpenseAnalyticsRequest
 
-	// Read from JSON Body or Query Params
-	// For analytics, GET request typically uses Query string or Body depending on the architecture.
-	// Since standard practice here used BodyParser for UserID, we'll continue using it for ease.
 	if err := ctx.BodyParser(&req); err != nil {
-		// Try Query if Body isn't provided (flexible)
-		month, _ := strconv.Atoi(ctx.Query("month"))
-		year, _ := strconv.Atoi(ctx.Query("year"))
-		userID, _ := strconv.ParseUint(ctx.Query("user_id"), 10, 32)
-		if month > 0 && year > 0 && userID > 0 {
+		return response.Error(ctx, fiber.StatusBadRequest, "invalid request body")
+	}
+
+	// Read month and year from Query Params
+	monthStr := ctx.Query("month")
+	yearStr := ctx.Query("year")
+
+	if monthStr != "" {
+		if month, err := strconv.Atoi(monthStr); err == nil {
 			req.Month = month
+		}
+	}
+
+	if yearStr != "" {
+		if year, err := strconv.Atoi(yearStr); err == nil {
 			req.Year = year
-			req.UserID = uint(userID)
-		} else {
-			return response.Error(ctx, fiber.StatusBadRequest, "invalid request format")
 		}
 	}
 
