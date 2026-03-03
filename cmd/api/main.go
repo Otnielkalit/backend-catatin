@@ -46,7 +46,7 @@ func main() {
 			port = "8080" // Default fallback
 		}
 	}
-	host := os.Getenv("APP_HOST")
+	host := os.Getenv("SERVER_HOST")
 	if host == "" {
 		host = "0.0.0.0" // Ensure it listens on all interfaces (crucial for Cloud deployments)
 	}
