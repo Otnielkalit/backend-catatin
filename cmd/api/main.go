@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -37,17 +38,24 @@ func main() {
 	// Setup Routes
 	controller.SetupRoutes(app, config.DB)
 
-	host := os.Getenv("APP_HOST")
-	port := os.Getenv("APP_PORT")
+	// Determine Port
+	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = os.Getenv("APP_PORT")
+		if port == "" {
+			port = "8080" // Default fallback
+		}
+	}
+	host := os.Getenv("APP_HOST")
+	if host == "" {
+		host = "0.0.0.0" // Ensure it listens on all interfaces (crucial for Cloud deployments)
 	}
 
-	address := host + ":" + port
+	address := fmt.Sprintf("%s:%s", host, port)
+	log.Printf("Starting server on %s...\n", address)
 
-	log.Printf("Starting server on %s...", address)
 	err = app.Listen(address)
 	if err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+		log.Fatalf("Error starting server: %v", err)
 	}
 }
