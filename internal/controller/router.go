@@ -1,16 +1,19 @@
 package controller
 
 import (
+	analyticsController "be-catatin/internal/controller/analytics"
 	budgetController "be-catatin/internal/controller/budget"
 	categoryController "be-catatin/internal/controller/category"
 	expenseController "be-catatin/internal/controller/expense"
 	userController "be-catatin/internal/controller/user"
 
+	analyticsRepo "be-catatin/internal/repository/analytics"
 	budgetRepo "be-catatin/internal/repository/budget"
 	categoryRepo "be-catatin/internal/repository/category"
 	expenseRepo "be-catatin/internal/repository/expense"
 	userRepo "be-catatin/internal/repository/user"
 
+	analyticsUsecase "be-catatin/internal/usecase/analytics"
 	budgetUsecase "be-catatin/internal/usecase/budget"
 	categoryUsecase "be-catatin/internal/usecase/category"
 	expenseUsecase "be-catatin/internal/usecase/expense"
@@ -69,4 +72,12 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	expenseGroup.Get("/", expenseCtrl.FindAll)
 	expenseGroup.Get("/:id", expenseCtrl.FindByID)
 	expenseGroup.Delete("/:id", expenseCtrl.Delete)
+
+	// Dependencies Injection untuk Analytics
+	analyticsRepository := analyticsRepo.NewRepository(db)
+	analyticsUcase := analyticsUsecase.NewUsecase(analyticsRepository)
+	analyticsCtrl := analyticsController.NewController(analyticsUcase)
+
+	analyticsGroup := api.Group("/analytics")
+	analyticsGroup.Get("/expenses", analyticsCtrl.GetExpenseAnalytics)
 }
