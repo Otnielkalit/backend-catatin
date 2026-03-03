@@ -10,7 +10,7 @@ Dokumentasi endpoint untuk aplikasi Backend Catatain. Semua endpoint mengembalik
 }
 ```
 
-**Base URL**: `http://<host>:<port>/api/v1`
+**Base URL**: `https://welcoming-radiance-production-4303.up.railway.app/api/v1`
 
 ---
 
