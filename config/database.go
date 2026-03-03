@@ -26,6 +26,9 @@ func InitEnv() {
 
 // InitDB connects to the PostgreSQL database
 func InitDB() {
+	log.Printf("DEBUG DATABASE_URL: '%s'", os.Getenv("DATABASE_URL"))
+	log.Printf("DEBUG DB_HOST: '%s'", os.Getenv("DB_HOST"))
+	log.Printf("DEBUG DB_PORT: '%s'", os.Getenv("DB_PORT"))
 	dsn := os.Getenv("DATABASE_URL")
 
 	if dsn == "" {
