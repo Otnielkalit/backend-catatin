@@ -8,5 +8,7 @@ type CreateBudgetRequest struct {
 }
 
 type GetBudgetRequest struct {
-	UserID uint `json:"user_id" form:"user_id" validate:"required"`
+	UserID uint `json:"user_id" form:"user_id" query:"user_id" validate:"required"`
+	Month  int  `json:"month" form:"month" query:"month"`
+	Year   int  `json:"year" form:"year" query:"year"`
 }

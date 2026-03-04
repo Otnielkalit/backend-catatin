@@ -42,14 +42,18 @@ func (c *Controller) Create(ctx *fiber.Ctx) error {
 func (c *Controller) FindAll(ctx *fiber.Ctx) error {
 	var req model.GetBudgetRequest
 	if err := ctx.BodyParser(&req); err != nil {
-		return response.Error(ctx, fiber.StatusBadRequest, "invalid request body")
+		// Ignore body parser error as this is a GET request and parameters might be in query
+	}
+
+	if err := ctx.QueryParser(&req); err != nil {
+		return response.Error(ctx, fiber.StatusBadRequest, "invalid query parameters")
 	}
 
 	if err := validate.Struct(&req); err != nil {
 		return response.Error(ctx, fiber.StatusBadRequest, err.Error())
 	}
 
-	budgets, err := c.usecase.FindAll(req.UserID)
+	budgets, err := c.usecase.FindAll(req.UserID, req.Month, req.Year)
 	if err != nil {
 		return response.Error(ctx, fiber.StatusInternalServerError, err.Error())
 	}

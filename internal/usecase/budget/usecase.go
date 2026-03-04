@@ -7,7 +7,7 @@ import (
 
 type Usecase interface {
 	Create(userID uint, amount float64, month int, year int) (*entity.Budget, error)
-	FindAll(userID uint) ([]*entity.Budget, error)
+	FindAll(userID uint, month, year int) ([]*entity.Budget, error)
 	FindByID(id uint, userID uint) (*entity.Budget, error)
 	Delete(id uint, userID uint) error
 }
@@ -36,8 +36,8 @@ func (u *usecase) Create(userID uint, amount float64, month int, year int) (*ent
 	return budget, nil
 }
 
-func (u *usecase) FindAll(userID uint) ([]*entity.Budget, error) {
-	return u.repo.FindAll(userID)
+func (u *usecase) FindAll(userID uint, month, year int) ([]*entity.Budget, error) {
+	return u.repo.FindAll(userID, month, year)
 }
 
 func (u *usecase) FindByID(id uint, userID uint) (*entity.Budget, error) {

@@ -8,7 +8,7 @@ import (
 
 type Repository interface {
 	Create(budget *entity.Budget) error
-	FindAll(userID uint) ([]*entity.Budget, error)
+	FindAll(userID uint, month, year int) ([]*entity.Budget, error)
 	FindByID(id uint, userID uint) (*entity.Budget, error)
 	Delete(id uint, userID uint) error
 }
@@ -25,9 +25,16 @@ func (r *repository) Create(budget *entity.Budget) error {
 	return r.db.Create(budget).Error
 }
 
-func (r *repository) FindAll(userID uint) ([]*entity.Budget, error) {
+func (r *repository) FindAll(userID uint, month, year int) ([]*entity.Budget, error) {
 	var budgets []*entity.Budget
-	err := r.db.Where("user_id = ?", userID).Find(&budgets).Error
+	query := r.db.Where("user_id = ?", userID)
+	if month > 0 {
+		query = query.Where("month = ?", month)
+	}
+	if year > 0 {
+		query = query.Where("year = ?", year)
+	}
+	err := query.Find(&budgets).Error
 	return budgets, err
 }
 
