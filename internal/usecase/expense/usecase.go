@@ -2,6 +2,7 @@ package expense
 
 import (
 	"be-catatin/internal/entity"
+	budgetRepo "be-catatin/internal/repository/budget"
 	expenseRepo "be-catatin/internal/repository/expense"
 	"be-catatin/pkg/cloudinary"
 	"fmt"
@@ -18,11 +19,12 @@ type Usecase interface {
 
 type usecase struct {
 	repo       expenseRepo.Repository
+	budgetRepo budgetRepo.Repository
 	cloudinary *cloudinary.CloudinaryService
 }
 
-func NewUsecase(repo expenseRepo.Repository, cloudinary *cloudinary.CloudinaryService) Usecase {
-	return &usecase{repo, cloudinary}
+func NewUsecase(repo expenseRepo.Repository, budgetRepo budgetRepo.Repository, cloudinary *cloudinary.CloudinaryService) Usecase {
+	return &usecase{repo, budgetRepo, cloudinary}
 }
 
 func (u *usecase) Create(userID uint, categoryID uint, title string, amount float64, transactionDate string, fileHeader *multipart.FileHeader) (*entity.Expense, error) {
@@ -62,6 +64,14 @@ func (u *usecase) Create(userID uint, categoryID uint, title string, amount floa
 	err = u.repo.Create(expense)
 	if err != nil {
 		return nil, err
+	}
+
+	// Automaticaly deduct budget for that month if it exists
+	budgets, err := u.budgetRepo.FindAll(userID, int(t.Month()), t.Year())
+	if err == nil && len(budgets) > 0 {
+		budget := budgets[0]
+		budget.Amount -= amount
+		_ = u.budgetRepo.Update(budget)
 	}
 
 	return expense, nil

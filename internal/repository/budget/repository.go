@@ -11,6 +11,7 @@ type Repository interface {
 	FindAll(userID uint, month, year int) ([]*entity.Budget, error)
 	FindByID(id uint, userID uint) (*entity.Budget, error)
 	Delete(id uint, userID uint) error
+	Update(budget *entity.Budget) error
 }
 
 type repository struct {
@@ -46,4 +47,8 @@ func (r *repository) FindByID(id uint, userID uint) (*entity.Budget, error) {
 
 func (r *repository) Delete(id uint, userID uint) error {
 	return r.db.Where("id = ? AND user_id = ?", id, userID).Delete(&entity.Budget{}).Error
+}
+
+func (r *repository) Update(budget *entity.Budget) error {
+	return r.db.Save(budget).Error
 }

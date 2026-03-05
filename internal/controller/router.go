@@ -48,7 +48,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 
 	// Dependencies Injection untuk Expense
 	expenseRepository := expenseRepo.NewRepository(db)
-	expenseUcase := expenseUsecase.NewUsecase(expenseRepository, cloudinarySvc)
+	expenseUcase := expenseUsecase.NewUsecase(expenseRepository, budgetRepository, cloudinarySvc)
 	expenseCtrl := expenseController.NewController(expenseUcase)
 
 	// Routes
